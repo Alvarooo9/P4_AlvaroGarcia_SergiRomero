@@ -1,6 +1,8 @@
 package EstructuraArbre;
 
-//DONA ERROR PERQUÈ QUEDA IMPLMENTAR ELS ALTRES MÈTODES DE LA INTERFÍCIE ACB
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class AcbEnll<E extends Comparable<E>> implements Acb<E> {
 
     private class NodeA implements Cloneable {
@@ -116,5 +118,71 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E> {
         } else {
             return membreRecursive(node.dret, element);
         }
+    }
+
+    @Override
+    public E arrel() throws ArbreException {
+        if (arrel == null) throw new ArbreException("L'arbre esta buit");
+        return arrel.inf;
+    }
+
+    @Override
+    public Acb<E> fillDret() throws CloneNotSupportedException {
+        if (arrel == null || arrel.dret == null) return new AcbEnll<>();
+        return new AcbEnll<>(arrel.dret.clone());
+    }
+
+    @Override
+    public Acb<E> fillEsquerre() throws CloneNotSupportedException {
+        if (arrel == null || arrel.esq == null) return new AcbEnll<>();
+        return new AcbEnll<>(arrel.esq.clone());
+    }
+
+    @Override
+    public boolean arbreBuit() {
+        if (arrel == null) return true;
+        return false;
+    }
+
+    @Override
+    public void buidar() {
+        arrel = null;
+    }
+
+    public Queue<E> getAscendentList() {
+        Queue<E> cua = new LinkedList<>();
+        omplirInOrdre(arrel, cua);
+        return cua;
+    }
+
+    private void omplirInOrdre(NodeA node, Queue<E> cua) {
+        if (node != null) {
+            omplirInOrdre(node.esq, cua);
+            cua.add(node.inf);
+            omplirInOrdre(node.dret, cua);
+        }
+    }
+
+    public Queue<E> getDescendentList() {
+        Queue<E> cua = new LinkedList<>();
+        omplirReverseInOrdre(arrel, cua);
+        return cua;
+    }
+
+    private void omplirReverseInOrdre(NodeA node, Queue<E> cua) {
+        if (node != null) {
+            omplirReverseInOrdre(node.dret, cua);
+            cua.add(node.inf);
+            omplirReverseInOrdre(node.esq, cua);
+        }
+    }
+
+    public int cardinalitat() {
+        return cardinalitatRecursive(arrel);
+    }
+
+    private int cardinalitatRecursive(NodeA node) {
+        if (node == null) return 0;
+        return 1 + cardinalitatRecursive(node.esq) + cardinalitatRecursive(node.dret);
     }
 }

@@ -1,6 +1,6 @@
 package Alumnes;
 
-public class Alumnes_SEC {
+public class Alumnes_SEC implements Comparable<Alumnes_SEC> {
 
     class Node {
         Node next;

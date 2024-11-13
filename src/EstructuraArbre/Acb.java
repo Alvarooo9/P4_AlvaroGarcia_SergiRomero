@@ -11,6 +11,9 @@ public interface Acb<E extends Comparable<E>> {
     // true si l’element està a l’arbre, fals en cas contrari
     boolean membre(E element);
 
+    // Si no és buit, retorna el contingut de l’arrel, en cas contrari llança una excepció ArbreException
+    E arrel() throws ArbreException;
+
     // Retorna una còpia del subarbre esquerre. En cas que l’arbre estigui buit o si no té fill esquerre retorna un arbre buit.
     Acb<E> fillEsquerre()throws CloneNotSupportedException;
 
