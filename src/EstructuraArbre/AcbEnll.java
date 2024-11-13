@@ -79,7 +79,7 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E> {
         }
 
         @Override
-        protected Object clone() throws CloneNotSupportedException {
+        public Object clone() throws CloneNotSupportedException {
             NodeA clonat = new NodeA(this.inf);
             if (this.esq != null) clonat.esq = (NodeA) this.esq.clone();
             if (this.dret != null) clonat.dret = (NodeA) this.dret.clone();
