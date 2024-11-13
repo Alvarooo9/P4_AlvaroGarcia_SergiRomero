@@ -19,20 +19,76 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E> {
             this(null, null, inf);
         }
 
-        @Override
-        protected NodeA clone() throws CloneNotSupportedException {
-            NodeA cloned = (NodeA) super.clone();
-            if (this.esq != null) {
-                cloned.esq = this.esq.clone();
-            }
-            if (this.dret != null) {
-                cloned.dret = this.dret.clone();
-            }
-            return cloned;
+        private boolean membreRecursive(E element) {
+            if (inf == null) return false;
+            int cmp = element.compareTo(inf);
+            if (cmp < 0) return esq != null && esq.membreRecursive(element);
+            if (cmp > 0) return dret != null && dret.membreRecursive(element);
+            return true;
         }
+
+        private void inserirRecursive(E element) {
+            int cmp = element.compareTo(inf);
+            if (cmp < 0) {
+                if (esq == null) esq = new NodeA(element);
+                else esq.inserirRecursive(element);
+            } else if (cmp > 0) {
+                if (dret == null) dret = new NodeA(element);
+                else dret.inserirRecursive(element);
+            }
+        }
+
+        //mètode per ajudar a esborrar un node el qual té dos fills i que l'arbre segueixi quedant ordenat
+        private E esborrarMinim(NodeA node) {
+            if (node.esq == null) return node.inf;
+            return esq.esborrarMinim(node.esq);
+        }
+
+        private NodeA esborrarRecursive(E element) {
+            int cmp = element.compareTo(inf);
+            if (cmp < 0 && esq != null) {
+                esq = esq.esborrarRecursive(element);
+            } else if (cmp > 0 && dret != null) {
+                dret = dret.esborrarRecursive(element);
+            } else if (cmp == 0) {
+                if (dret == null) return esq;
+                if (esq == null) return dret;
+                inf = dret.esborrarMinim(dret);
+                dret = dret.esborrarRecursive(inf);
+            }
+            return this;
+        }
+
+        private void omplirInordre(Queue<E> cua) {
+            if (esq != null) esq.omplirInordre(cua);
+            cua.add(inf);
+            if (dret != null) dret.omplirInordre(cua);
+        }
+
+        private void omplirReverseInordre(Queue<E> cua) {
+            if (dret != null) dret.omplirReverseInordre(cua);
+            cua.add(inf);
+            if (esq != null) esq.omplirReverseInordre(cua);
+        }
+
+        private int cardinalitatRecursive() {
+            int count = 1;
+            if (esq != null) count += esq.cardinalitatRecursive();
+            if (dret != null) count += dret.cardinalitatRecursive();
+            return count;
+        }
+
+        @Override
+        protected Object clone() throws CloneNotSupportedException {
+            NodeA clonat = new NodeA(this.inf);
+            if (this.esq != null) clonat.esq = (NodeA) this.esq.clone();
+            if (this.dret != null) clonat.dret = (NodeA) this.dret.clone();
+            return clonat;
+        }
+
     }
 
-    NodeA arrel;
+    private NodeA arrel;
 
     public AcbEnll(NodeA arrel) {
         this.arrel = arrel;
@@ -43,105 +99,33 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E> {
     }
 
     @Override
-    public void inserir(E element) throws ArbreException {
-        if (this.arrel == null) {
-            this.arrel = new NodeA(element);
-        } else {
-            inserirRecursive(arrel, element);
-        }
-    }
-
-    private void inserirRecursive(NodeA node, E element) throws ArbreException {
-        int cmp = element.compareTo(node.inf);
-        if (cmp == 0) {
-            throw new ArithmeticException("L'element ja existeix a l'arbre");
-        } else if (cmp < 0) {
-            if (node.esq == null) {
-                node.esq = new NodeA(element);
-            } else {
-                inserirRecursive(node.esq, element);
-            }
-        } else {
-            if (node.dret == null) {
-                node.dret = new NodeA(element);
-            } else {
-                inserirRecursive(node.dret, element);
-            }
-        }
-    }
-
-    @Override
-    public void esborrar(E element) throws ArbreException {
-        arrel = esborrarRecursive(arrel, element);
-    }
-
-    private NodeA esborrarRecursive(NodeA node, E element) throws ArbreException {
-        if (node == null) {
-            throw new ArbreException("Element no trobat a l'arbre");
-        }
-
-        int cmp = element.compareTo(node.inf);
-
-        if (cmp < 0) {
-            node.esq = esborrarRecursive(node.esq, element);
-        } else if (cmp > 0) {
-            node.dret = esborrarRecursive(node.dret, element);
-        } else {
-            if (node.esq == null) return node.dret;
-            if (node.dret == null) return node.esq;
-            NodeA minNode = esborrarMinim(node.dret);
-            node.inf = minNode.inf;
-            node.dret = esborrarRecursive(node.dret, minNode.inf);
-        }
-        return node;
-    }
-
-    //mètode per ajudar a esborrar un node el qual té dos fills i que l'arbre segueixi quedant ordenat
-    private NodeA esborrarMinim(NodeA node) {
-        while (node.esq != null) {
-            node = node.esq;
-        }
-        return node;
-    }
-
-    @Override
-    public boolean membre(E element) {
-        return membreRecursive(arrel, element);
-    }
-
-    private boolean membreRecursive(NodeA node, E element) {
-        if (node == null) return false;
-        int cmp = element.compareTo(node.inf);
-        if (cmp == 0) return true;
-        if (cmp < 0) {
-            return membreRecursive(node.esq, element);
-        } else {
-            return membreRecursive(node.dret, element);
-        }
-    }
-
-    @Override
     public E arrel() throws ArbreException {
         if (arrel == null) throw new ArbreException("L'arbre esta buit");
         return arrel.inf;
     }
 
-    @Override
-    public Acb<E> fillDret() throws CloneNotSupportedException {
-        if (arrel == null || arrel.dret == null) return new AcbEnll<>();
-        return new AcbEnll<>(arrel.dret.clone());
-    }
 
     @Override
     public Acb<E> fillEsquerre() throws CloneNotSupportedException {
-        if (arrel == null || arrel.esq == null) return new AcbEnll<>();
-        return new AcbEnll<>(arrel.esq.clone());
+        AcbEnll<E> subarbre = new AcbEnll<>();
+        if (arrel != null && arrel.esq != null) {
+            subarbre.arrel = (NodeA) arrel.esq.clone();
+        }
+        return subarbre;
+    }
+
+    @Override
+    public Acb<E> fillDret() throws CloneNotSupportedException {
+        AcbEnll<E> subarbre = new AcbEnll<>();
+        if (arrel != null && arrel.dret != null) {
+            subarbre.arrel = (NodeA) arrel.dret.clone();
+        }
+        return subarbre;
     }
 
     @Override
     public boolean arbreBuit() {
-        if (arrel == null) return true;
-        return false;
+        return arrel == null;
     }
 
     @Override
@@ -149,40 +133,43 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E> {
         arrel = null;
     }
 
-    public Queue<E> getAscendentList() {
-        Queue<E> cua = new LinkedList<>();
-        omplirInOrdre(arrel, cua);
-        return cua;
+    @Override
+    public void inserir(E element) throws ArbreException {
+        if (arrel == null) {
+            arrel = new NodeA(element);
+        } else {
+            arrel.inserirRecursive(element);
+        }
     }
 
-    private void omplirInOrdre(NodeA node, Queue<E> cua) {
-        if (node != null) {
-            omplirInOrdre(node.esq, cua);
-            cua.add(node.inf);
-            omplirInOrdre(node.dret, cua);
-        }
+    @Override
+    public void esborrar(E element) throws ArbreException {
+        if (arrel == null) throw new ArbreException("Element no trobat a l'arbre.");
+        arrel = arrel.esborrarRecursive(element);
+    }
+
+    @Override
+    public boolean membre(E element) {
+        return arrel != null && arrel.membreRecursive(element);
+    }
+
+    public Queue<E> getAscendentList() {
+        Queue<E> cua = new LinkedList<>();
+        if (arrel != null) arrel.omplirInordre(cua);
+        return cua;
     }
 
     public Queue<E> getDescendentList() {
         Queue<E> cua = new LinkedList<>();
-        omplirReverseInOrdre(arrel, cua);
+        if (arrel != null) arrel.omplirReverseInordre(cua);
         return cua;
     }
 
-    private void omplirReverseInOrdre(NodeA node, Queue<E> cua) {
-        if (node != null) {
-            omplirReverseInOrdre(node.dret, cua);
-            cua.add(node.inf);
-            omplirReverseInOrdre(node.esq, cua);
-        }
-    }
-
     public int cardinalitat() {
-        return cardinalitatRecursive(arrel);
-    }
-
-    private int cardinalitatRecursive(NodeA node) {
-        if (node == null) return 0;
-        return 1 + cardinalitatRecursive(node.esq) + cardinalitatRecursive(node.dret);
+        if (arrel != null) {
+            return arrel.cardinalitatRecursive();
+        } else {
+            return 0;
+        }
     }
 }
