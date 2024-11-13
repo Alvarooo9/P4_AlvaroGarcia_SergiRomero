@@ -44,7 +44,7 @@ public class AcbEnll<E extends Comparable<E>> implements Acb<E> {
             return esq.esborrarMinim(node.esq);
         }
 
-        private NodeA esborrarRecursive(E element) {
+        private NodeA esborrarRecursive(E element) throws ArbreException{
             int cmp = element.compareTo(inf);
             if (cmp < 0 && esq != null) {
                 esq = esq.esborrarRecursive(element);
