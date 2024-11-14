@@ -39,7 +39,7 @@ public class Assignatura {
         return this.nota;
     }
 
-    public int getPunts (){
+    public int getPunts() {
         if (nota >= EXCELLENT) {
             return mHonor ? 4 : 3;
         } else if (nota >= NOTABLE) {
