@@ -1,4 +1,8 @@
 package EstructuraArbre;
 
-public class ArbreException {
+public class ArbreException extends Exception{
+
+    public ArbreException(String msg){
+        super(msg);
+    }
 }
