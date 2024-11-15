@@ -1,9 +1,12 @@
 import Alumnes.Alumnes_SEC;
 import EstructuraArbre.ArbreException;
 
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) throws ArbreException {
         Beca beca = new Beca();
+        Scanner sc = new Scanner(System.in);
         while (true) {
             System.out.print("Que vols fer? ");
             System.out.println("1. Afegir un nou alumne.");
@@ -12,7 +15,7 @@ public class Main {
             System.out.println("4. Esborrar alumnes sense matrícula d’honor.");
             System.out.println("5. Sortir del programa");
 
-            int accio = Integer.parseInt(scanner.nextLine());
+            int accio = Integer.parseInt(sc.nextLine());
 
             switch (accio) {
                 case 1:
@@ -20,7 +23,7 @@ public class Main {
                     break;
                 case 2:
                     System.out.print("Nom de l'alumne a esborrar: ");
-                    String nom = scanner.nextLine();
+                    String nom = sc.nextLine();
                     try {
                         beca.arbreACB.esborrar(new Alumnes_SEC(nom));
                     } catch (ArbreException e) {

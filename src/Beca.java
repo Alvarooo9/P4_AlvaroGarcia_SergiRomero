@@ -1,6 +1,5 @@
 import Alumnes.Alumnes_SEC;
 import Alumnes.Assignatura;
-import EstructuraArbre.Acb;
 import EstructuraArbre.AcbEnll;
 import EstructuraArbre.ArbreException;
 
