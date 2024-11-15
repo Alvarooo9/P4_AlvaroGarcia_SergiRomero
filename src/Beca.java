@@ -56,32 +56,65 @@ public class Beca {
         return randomAlumne;
     }
 
-    private boolean finalRecorregut(){
+    private boolean finalRecorregut() {
         return llistaDescendent.isEmpty();
     }
 
-    private Alumnes_SEC segRecorregut(){
+    private Alumnes_SEC segRecorregut() {
         return llistaDescendent.poll();
     }
 
     @Override
     public String toString() {
         String resultat = "";
-        Queue<Alumnes_SEC> tempQueue = new LinkedList<>(llistaDescendent);
-        while (!tempQueue.isEmpty()) {
-            resultat += tempQueue.poll().toString() + "\n";
+        Queue<Alumnes_SEC> llista = new LinkedList<>(llistaDescendent);
+        while (!llista.isEmpty()) {
+            resultat += llista.poll().toString() + "\n";
         }
         return resultat;
     }
 
-    public void esborraAlumnesSenseMatricula(){
-        //FER METODE
+    public void esborraAlumnesSenseMatricula() {
+        Queue<Alumnes_SEC> llista = new LinkedList<>(llistaDescendent);
+        for (Alumnes_SEC alumne : llista) {
+            if (!alumne.hiHa(4)) {
+                try {
+                    arbreACB.esborrar(alumne);
+                } catch (ArbreException e) {
+                    System.out.println("No s'ha pogut esborrar l'alumne");
+                }
+            }
+        }
+        llistaDescendent = arbreACB.getDescendentList();
     }
 
-    public void afegirAlumne(){
-        //FER METODE
-    }
+    public void afegirAlumne() {
+        System.out.print("Indica el nom de l'alumne: ");
+        String nom = scanner.nextLine();
+        Alumnes_SEC nouAlumne = new Alumnes_SEC(nom);
 
+        while (true) {
+            System.out.print("Nom de l'assignatura (o 'fi' si ja les ha afegit totes): ");
+            String nomAssignatura = scanner.nextLine();
+            if (nomAssignatura.equalsIgnoreCase("fi")) {
+                break;
+            }
+            System.out.print("Crèdits de l'assignatura: ");
+            int credits = Integer.parseInt(scanner.nextLine());
+            System.out.print("Nota de l'assignatura: ");
+            double nota = Double.parseDouble(scanner.nextLine());
+            System.out.print("Matrícula d'honor (true/false): ");
+            boolean mHonor = Boolean.parseBoolean(scanner.nextLine());
+
+            nouAlumne.addAssignatura(new Assignatura(nomAssignatura, credits, nota, mHonor));
+        }
+        try {
+            arbreACB.inserir(nouAlumne);
+            llistaDescendent = arbreACB.getDescendentList();
+        } catch (ArbreException e) {
+            System.out.println("No s'ha pogut afegir l'alumne: " + e.getMessage());
+        }
+    }
 
 
 }
