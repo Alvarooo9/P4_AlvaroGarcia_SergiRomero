@@ -28,7 +28,6 @@ public class Beca {
         arbreACB.inserir(exempleRandom("Carles"));
     }
 
-    // Exemple Rosa
     private Alumnes_SEC exempleRosa() {
         Alumnes_SEC rosa = new Alumnes_SEC("Rosa");
         rosa.addAssignatura(new Assignatura("Fonaments de la Programació", 6, 7, false));
@@ -38,7 +37,6 @@ public class Beca {
         return rosa;
     }
 
-    // Exemple Enric
     private Alumnes_SEC exempleEnric() {
         Alumnes_SEC enric = new Alumnes_SEC("Enric");
         enric.addAssignatura(new Assignatura("Fonaments de la Programació", 6, 8, false));
